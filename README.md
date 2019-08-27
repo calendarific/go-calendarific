@@ -40,7 +40,7 @@ dep ensure -add https://github.com/calendarific/go-calendarific
     }
     ```
 
-Check out the [file](https://github.com/calendarific/go-calendarific/blob/master/main.go) for parameter struct and response struct.
+    Check out the [file](https://github.com/calendarific/go-calendarific/blob/master/main.go) for parameter struct and response struct.
 
 + Run the program for data
     ```
