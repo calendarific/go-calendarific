@@ -52,7 +52,7 @@ type CalResponse struct {
 }
 
 // We don't use this struct, since the states response json is not always a JSON
-// it sometimes its a string
+// it is sometimes a string
 type States []struct {
 	ID        int         `json:"id"`
 	Abbrev    string      `json:"abbrev"`
@@ -61,25 +61,23 @@ type States []struct {
 	Iso       string      `json:"iso"`
 }
 
-// Request the data from the URL
+// Handle the request and fetch the data from Calendarific server
 func (p *CalParameters) requestHandler() (*CalResponse, error) {
 
 	// Initialize the response
 	c := new(CalResponse)
 
-	// Build a url query based on data passed
+	// Build a url query based on data passed via the parameter struct
 	q, _ := query.Values(p)
-
-	// The URL with parameters
 	url := fmt.Sprintf("%s%s", CalAPI, q.Encode())
 
-	// Send the request to the calendarific server
+	// Initialize the request to the calendarific server
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
-		return c, fmt.Errorf("received error when starting the request, error: %v", err)
+		return c, fmt.Errorf("received error when initializing the request, error: %v", err)
 	}
 
-	// perform request (60 seconds timeout, in case we wait for so long)
+	// Perform request (60 seconds timeout, in case we wait for so long)
 	client := &http.Client{Timeout: 60 * time.Second}
 	resp, err := client.Do(req)
 	if err != nil {
@@ -93,7 +91,7 @@ func (p *CalParameters) requestHandler() (*CalResponse, error) {
 		return c, fmt.Errorf("received error when reading the response body, error: %v", err)
 	}
 
-	// if the status code is not 200, then we error'ed out
+	// If the status code is not 200, then we error'ed out
 	if resp.StatusCode != http.StatusOK {
 		return c, fmt.Errorf("received invalid status code (%v), error: %v", resp.StatusCode, err)
 	}
