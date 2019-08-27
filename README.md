@@ -5,7 +5,7 @@ Official Go library for Calendarific Global Holiday API
 # Installation
 
 ```
-dep ensure -add https://github.com/calendarific/go-calendarific
+dep ensure -add github.com/calendarific/go-calendarific
 ```
 
 # Usage / Example
