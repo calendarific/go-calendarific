@@ -1,6 +1,6 @@
 # go-calendarific
 
-Unofficial Go library for Calendarific Global Holiday API
+Official Go library for Calendarific Global Holiday API
 
 # Installation
 
