@@ -33,22 +33,24 @@ type CalResponse struct {
 		Code int `json:"code"`
 	} `json:"meta"`
 	Response struct {
-		Holidays []struct {
-			Name        string `json:"name"`
-			Description string `json:"description"`
-			Date        struct {
-				Iso      string `json:"iso"`
-				Datetime struct {
-					Year  int `json:"year"`
-					Month int `json:"month"`
-					Day   int `json:"day"`
-				} `json:"datetime"`
-			} `json:"date"`
-			Type      []string    `json:"type"`
-			Locations string      `json:"locations"`
-			States    interface{} `json:"states"` // sometimes its a struct, sometime its a string, so use interface
-		} `json:"holidays"`
+		Holidays []Holiday `json:"holidays"`
 	} `json:"response"`
+}
+
+type Holiday struct {
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	Date        struct {
+		Iso      string `json:"iso"`
+		Datetime struct {
+			Year  int `json:"year"`
+			Month int `json:"month"`
+			Day   int `json:"day"`
+		} `json:"datetime"`
+	} `json:"date"`
+	Type      []string    `json:"type"`
+	Locations string      `json:"locations"`
+	States    interface{} `json:"states"` // sometimes its a struct, sometime its a string, so use interface
 }
 
 // We don't use this struct, since the states response json is not always a JSON
