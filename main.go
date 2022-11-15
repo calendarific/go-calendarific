@@ -33,22 +33,25 @@ type CalResponse struct {
 		Code int `json:"code"`
 	} `json:"meta"`
 	Response struct {
-		Holidays []struct {
-			Name        string `json:"name"`
-			Description string `json:"description"`
-			Date        struct {
-				Iso      string `json:"iso"`
-				Datetime struct {
-					Year  int `json:"year"`
-					Month int `json:"month"`
-					Day   int `json:"day"`
-				} `json:"datetime"`
-			} `json:"date"`
-			Type      []string    `json:"type"`
-			Locations string      `json:"locations"`
-			States    interface{} `json:"states"` // sometimes its a struct, sometime its a string, so use interface
-		} `json:"holidays"`
+		Holidays []Holiday `json:"holidays"`
 	} `json:"response"`
+}
+
+type Holiday struct {
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	Date        struct {
+		Iso      string `json:"iso"`
+		Datetime struct {
+			Year  int `json:"year"`
+			Month int `json:"month"`
+			Day   int `json:"day"`
+		} `json:"datetime"`
+	} `json:"date"`
+	GoDate    time.Time   `json:"-"` // This field is not in the original response, so ignore it when parsing JSON
+	Type      []string    `json:"type"`
+	Locations string      `json:"locations"`
+	States    interface{} `json:"states"` // sometimes its a struct, sometime its a string, so use interface
 }
 
 // We don't use this struct, since the states response json is not always a JSON
@@ -100,6 +103,11 @@ func (p *CalParameters) requestHandler() (*CalResponse, error) {
 	err = json.Unmarshal(contents, &c)
 	if err != nil {
 		return c, fmt.Errorf("received error when unmarshalling the data, error: %v", err)
+	}
+	for i, h := range c.Response.Holidays {
+		dt := h.Date.Datetime
+		h.GoDate = time.Date(dt.Year, time.Month(dt.Month), dt.Day, 0, 0, 0, 0, time.Local)
+		c.Response.Holidays[i] = h
 	}
 
 	return c, nil
