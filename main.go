@@ -48,6 +48,7 @@ type Holiday struct {
 			Day   int `json:"day"`
 		} `json:"datetime"`
 	} `json:"date"`
+	GoDate    time.Time   `json:"-"` // This field is not in the original response, so ignore it when parsing JSON
 	Type      []string    `json:"type"`
 	Locations string      `json:"locations"`
 	States    interface{} `json:"states"` // sometimes its a struct, sometime its a string, so use interface
@@ -102,6 +103,11 @@ func (p *CalParameters) requestHandler() (*CalResponse, error) {
 	err = json.Unmarshal(contents, &c)
 	if err != nil {
 		return c, fmt.Errorf("received error when unmarshalling the data, error: %v", err)
+	}
+	for i, h := range c.Response.Holidays {
+		dt := h.Date.Datetime
+		h.GoDate = time.Date(dt.Year, time.Month(dt.Month), dt.Day, 0, 0, 0, 0, time.Local)
+		c.Response.Holidays[i] = h
 	}
 
 	return c, nil
